@@ -1,0 +1,15 @@
+# Android Keystore Configuration Template
+# Copy this file to android/key.properties and fill in with your actual values
+# This file is gitignored and should NOT be committed to version control
+
+# Path to your keystore file
+storeFile=../surah_pdf.keystore
+
+# Password for the keystore
+storePassword=your_keystore_password_here
+
+# Alias of your key within the keystore
+keyAlias=surah_pdf_key
+
+# Password for the key
+keyPassword=your_key_password_here

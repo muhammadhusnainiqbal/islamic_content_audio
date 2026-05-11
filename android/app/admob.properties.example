@@ -1,0 +1,8 @@
+# Example AdMob property file (do not commit real keys to VCS)
+# copy this file to admob.properties and set real IDs.
+
+# ca-app-pub-3940256099942544~3347511713 is test id provided by google
+
+surah_yaseen.app.id=ca-app-pub-3940256099942544~3347511713
+surah_rehman.app.id=ca-app-pub-3940256099942544~3347511713
+default.app.id=ca-app-pub-3940256099942544~3347511713
