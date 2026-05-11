@@ -1,6 +1,6 @@
-import 'package:islamic_content_pdf/config/app_config.dart';
-import 'package:islamic_content_pdf/config/content_type.dart';
-import 'package:islamic_content_pdf/secrets/secrets.dart';
+import 'package:islamic_content_audio/config/app_config.dart';
+import 'package:islamic_content_audio/config/content_type.dart';
+import 'package:islamic_content_audio/secrets/secrets.dart';
 
 /// Surah Yaseen Configuration
 const kAppConfig = AppConfig(

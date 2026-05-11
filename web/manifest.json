@@ -1,6 +1,6 @@
 {
-    "name": "islamic_content_pdf",
-    "short_name": "islamic_content_pdf",
+    "name": "islamic_content_audio",
+    "short_name": "islamic_content_audio",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

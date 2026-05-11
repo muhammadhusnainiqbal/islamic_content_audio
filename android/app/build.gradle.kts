@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.ummeshuja.islamic_content_pdf"
+    namespace = "com.ummeshuja.islamic_content_audio"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

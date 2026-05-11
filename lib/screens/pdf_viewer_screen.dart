@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:islamic_content_pdf/config/app_config.dart';
+import 'package:islamic_content_audio/config/app_config.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final AppConfig appConfig;

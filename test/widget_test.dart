@@ -12,8 +12,8 @@
 // requires platform channels that are not available in widget test context.
 
 // import 'package:flutter_test/flutter_test.dart';
-// import 'package:islamic_content_pdf/main.dart';
-// import 'package:islamic_content_pdf/config/surah_yaseen_config.dart';
+// import 'package:islamic_content_audio/main.dart';
+// import 'package:islamic_content_audio/config/surah_yaseen_config.dart';
 //
 // void main() {
 //   testWidgets('Surah Yaseen screen renders correctly', (WidgetTester tester) async {
@@ -21,4 +21,3 @@
 //     expect(find.text('Surah Yaseen'), findsOneWidget);
 //   });
 // }
-

@@ -1,4 +1,4 @@
-name: islamic_content_pdf
+name: islamic_content_audio
 description: "Production-ready multi-flavor Flutter application for distributing Islamic content (Surahs, Duas, Ayat, Darood) as separate branded apps on Google Play Store. Features per-flavor customization (names, icons, content, AdMob configuration), automated flavor scaffolding, build-time asset correctness, and minimal APK size (~30-50MB per flavor). Ready for CI/CD and production deployment."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

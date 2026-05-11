@@ -202,9 +202,9 @@ void _createConfigFile(
   final file = File('lib/config/${name}_config.dart');
   final camel = _toCamelCase(name);
   file.writeAsStringSync(
-    "import 'package:islamic_content_pdf/config/app_config.dart';\n"
-    "import 'package:islamic_content_pdf/config/content_type.dart';\n"
-    "import 'package:islamic_content_pdf/secrets/secrets.dart';\n"
+    "import 'package:islamic_content_audio/config/app_config.dart';\n"
+    "import 'package:islamic_content_audio/config/content_type.dart';\n"
+    "import 'package:islamic_content_audio/secrets/secrets.dart';\n"
     '\n'
     '/// $english Configuration\n'
     'const kAppConfig = AppConfig(\n'
@@ -228,7 +228,7 @@ void _registerInFlavorManager(String name) {
     // Remove old import line
     content = content.replaceAll(
       RegExp(
-        r"import 'package:islamic_content_pdf/config/" +
+        r"import 'package:islamic_content_audio/config/" +
             RegExp.escape(name) +
             r"_config\.dart'\s+as\s+" +
             RegExp.escape(name) +
@@ -242,7 +242,7 @@ void _registerInFlavorManager(String name) {
 
   // 1. Insert import before the "/// Flavor manager:" doc comment
   final importLine =
-      "import 'package:islamic_content_pdf/config/${name}_config.dart'\n"
+      "import 'package:islamic_content_audio/config/${name}_config.dart'\n"
       "    as $name;\n";
   content = content.replaceFirst(
     '/// Flavor manager:',
@@ -475,7 +475,7 @@ Example 2 — real AdMob IDs (fully automated, zero manual edits needed):
     --banner-id ca-app-pub-3940256099942544/6300978111 \\
     --admob-app-id ca-app-pub-3940256099942544~3347511713
 
-islamic_content_pdf % dart run scripts/add_flavor.dart --name surah_mulk --arabic  "سورۃ الملک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surah_mulk --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
+islamic_content_audio % dart run scripts/add_flavor.dart --name surah_mulk --arabic  "سورۃ الملک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surah_mulk --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
 
 ''');
 }
