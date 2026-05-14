@@ -1,21 +1,21 @@
-# Islamic Content PDF Viewer
+# Islamic Content Audio Player
 
-A production-ready **multi-flavor Flutter application** for distributing Islamic content (Surahs, Duas, Ayat etc) as separate branded apps on Play Store & App Store. Each flavor is a distinct app with unique branding, PDF content, and monetization configuration.
+A production-ready **multi-flavor Flutter application** for distributing Islamic content (Surahs, Duas, Ayat, etc.) as separate branded audio player apps on Play Store & App Store. Each flavor is a distinct app with unique branding, audio content, and monetization configuration.
 
 ## Features
 
 - 📱 **Multi-Flavor Architecture**: Build multiple distinct apps from a single codebase
-- 📄 **PDF Viewer**: Fast, gesture-based PDF viewing using Syncfusion
+- 🎵 **Audio Player**: Full-featured audio playback with seek, pause, and duration tracking
 - 🎨 **Per-Flavor Customization**: Unique app names, icons, colors per flavor
 - 💰 **AdMob Integration**: Per-flavor AdMob configuration for monetization
 - 🤖 **Automated Flavor Scaffolding**: Add new flavors with a single command
-- 🔒 **Build-Time Asset Correctness**: Impossible to ship wrong PDF (enforced by Gradle)
+- 🔒 **Build-Time Asset Correctness**: Impossible to ship wrong audio file
 - 🔐 **Environment-Based Secrets**: No hardcoded credentials; CI/CD-ready
 
 ## Project Structure
 
 ```
-islamic_content_pdf/
+islamic_content_audio/
 ├── lib/
 │   ├── main.dart                      # Entry point (FLAVOR routing)
 │   ├── config/
@@ -23,10 +23,10 @@ islamic_content_pdf/
 │   │   ├── app_config.dart            # Configuration model
 │   │   ├── content_type.dart          # Content type enum
 │   │   ├── surah_yaseen_config.dart   # Flavor 1
-│   │   ├── surah_rehman_config.dart   # Flavor 2
-│   │   └── surah_mulk_config.dart     # Flavor 3
+│   │   ├── surah_muzammil_config.dart # Flavor 2
+│   │   └── ...                        # Additional flavors
 │   ├── screens/
-│   │   └── pdf_viewer_screen.dart     # Main UI
+│   │   └── player_screen.dart         # Main audio player UI
 │   ├── secrets/
 │   │   └── secrets.dart               # AdMob IDs (Git-ignored)
 │   └── theme/
@@ -37,12 +37,12 @@ islamic_content_pdf/
 │       ├── admob.properties           # AdMob IDs (Git-ignored)
 │       └── src/main/AndroidManifest.xml
 ├── assets/
-│   ├── islamic_content/               # Runtime asset (PDF)
-│   ├── icons/                         # Runtime icon
-│   ├── surah_yaseen/                  # Flavor 1 source
-│   ├── surah_rehman/                  # Flavor 2 source
-│   ├── surah_mulk/                    # Flavor 3+ source
-│   └── splash/                        # Splash screen
+│   ├── islamic_content/
+│   │   └── audio/                     # 
+│   │   └── audio/                     # Runtime audio flavor files (MP3)
+│   └── audio                     # 
+│   ├── icons                         # 
+Splash screen
 ├── scripts/
 │   └── add_flavor.dart                # Flavor scaffolder
 ├── test/
@@ -66,7 +66,7 @@ islamic_content_pdf/
 
 ```bash
 git clone <repository-url>
-cd islamic_content_pdf
+cd islamic_content_audio
 ```
 
 ### 2. Install Dependencies
@@ -82,6 +82,16 @@ flutter doctor
 ```
 
 Ensure all required components show ✓.
+
+### 4. Prepare Audio Files
+
+Create audio files in `assets/islamic_content/` directory:
+```
+assets/
+  islamic_content/
+      islamic_content.mp3
+      ...
+```
 
 ## Running the App
 
@@ -103,84 +113,76 @@ flutter run --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name>
 # Surah Yaseen
 flutter run --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen
 
-# Surah Rahman
-flutter run --flavor surah_rehman --dart-define=FLAVOR=surah_rehman
-
-# Surah Mulk
-flutter run --flavor surah_mulk --dart-define=FLAVOR=surah_mulk
+# Surah Muzammil
+flutter run --flavor surah_muzammil --dart-define=FLAVOR=surah_muzammil
 ```
 
-## Building
+### Run on Specific Device
+
+```bash
+flutter devices  # List available devices
+
+flutter run --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen -d <device-id>
+```
+
+### Run in Release Mode
+
+```bash
+flutter run --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
+```
+
+## Building for Release
 
 ### Build APK (Release)
 
 ```bash
-flutter build apk --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name> --release
+flutter build apk --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
 ```
 
-Output: `build/app/outputs/apk/<flavor-name>/release/app-<flavor-name>-release.apk`
+**Output**: `build/app/outputs/flutter-apk/app-surah_yaseen-release.apk`
 
-### Build App Bundle (for Google Play)
+### Build App Bundle for Google Play
 
 ```bash
-flutter build appbundle --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name> --release
+flutter build appbundle --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
 ```
 
-Output: `build/app/outputs/bundle/<flavor-name>Release/app-<flavor-name>-release.aab`
+**Output**: `build/app/outputs/bundle/surah_yaseenRelease/app-surah_yaseen-release.aab`
 
-## Multi-Flavor Architecture
-
-### What is a Flavor?
-
-Each flavor is a distinct app configuration:
-- **Unique App ID**: `com.ummeshuja.<flavor-name>` (separate Play Store listing)
-- **Custom Branding**: Name, icon, colors, splash screen
-- **Dedicated Content**: Own PDF file
-- **AdMob Configuration**: Per-flavor monetization
-
-### Existing Flavors
-
-| Flavor | English Name | App ID |
-|--------|--------------|--------|
-| `surah_yaseen` | Surah Yaseen | `com.ummeshuja.surahyaseen.pdf` |
-| `surah_rehman` | Surah Rahman | `com.ummeshuja.surahrehman.pdf` |
-| `surah_mulk` | Surah Mulk | `com.ummeshuja.surahmulk.pdf` |
-
-### How Flavors Work
-
-1. **Build Selection**: `flutter build ... --flavor surah_yaseen` selects the flavor
-2. **Asset Pipeline**: Gradle copies `assets/surah_yaseen/surah_yaseen.pdf` → `assets/islamic_content/islamic_content.pdf`
-3. **Dart Configuration**: `--dart-define=FLAVOR=surah_yaseen` tells the app which config to use
-4. **Runtime Routing**: `FlavorManager.getConfig('surah_yaseen')` returns the correct `AppConfig`
-5. **Output**: Separate APK with correct content, icon, and monetization
-
-**Result**: Each flavor is a complete, standalone app (~30-50MB per flavor).
-
-## Adding a New Flavor
-
-### Prerequisites
-
-Before running the script, prepare:
-
-1. **PDF File**: `assets/<flavor-name>/<flavor-name>.pdf` (your Islamic content)
-2. **Icon**: `assets/<flavor-name>/<flavor-name>_icon.png` (1024×1024 PNG)
-
-### Step 1: Place Assets
+### Build for All Flavors
 
 ```bash
-# Create flavor directory
-mkdir -p assets/<flavor-name>
+# APKs
+flutter build apk --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
+flutter build apk --flavor surah_muzammil --dart-define=FLAVOR=surah_muzammil --release
 
-# Copy your PDF
-cp your_content.pdf assets/<flavor-name>/<flavor-name>.pdf
-
-# Copy your icon
-cp icon.png assets/<flavor-name>/<flavor-name>_icon.png
+# App Bundles
+flutter build appbundle --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
+flutter build appbundle --flavor surah_muzammil --dart-define=FLAVOR=surah_muzammil --release
 ```
 
-### Step 2: Run Flavor Scaffolder
+## Configuration
 
-See [COMMANDS.md](COMMANDS.md) for ready-to-copy commands including Arabic names.
+### AppConfig Model
+
+Each flavor requires configuration in `lib/config/<flavor>_config.dart`:
+
+```dart
+import 'package:islamic_content_audio/config/app_config.dart';
+import 'package:islamic_content_audio/config/content_type.dart';
+import 'package:islamic_content_audio/secrets/secrets.dart';
+
+const kAppConfig = AppConfig(
+  nameArabic: 'سورۃ یٰسٓ',
+  nameEnglish: 'Surah Yaseen',
+  admobBannerUnitId: Secrets.surahYaseenBannerUnitId,
+  contentType: ContentType.surah,
+);
+```
+
+### Adding New Flavor
+
+Use the automated flavor scaffolder:
 
 ```bash
 dart run scripts/add_flavor.dart \
@@ -193,110 +195,207 @@ dart run scripts/add_flavor.dart \
   --admob-app-id <admob-app-id>
 ```
 
-> `--banner-id` and `--admob-app-id` are optional. Omit them to write placeholder IDs and fill in later.
-
-### What the Script Does
-
-1. ✅ Creates `lib/config/<flavor-name>_config.dart`
-2. ✅ Registers in `lib/config/flavor_manager.dart`
-3. ✅ Adds AdMob banner ID to `lib/secrets/secrets.dart`
-4. ✅ Adds productFlavor to `android/app/build.gradle.kts`
-5. ✅ Adds AdMob app ID to `android/app/admob.properties`
-6. ✅ Generates launcher icons for all platforms
-7. ✅ Copies assets to runtime locations
-
-### Step 3: Test the New Flavor
+**Example:**
 
 ```bash
-flutter run --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name>
+dart run scripts/add_flavor.dart \
+  --name surah_mulk \
+  --arabic "سورۃ الْمُلْک" \
+  --english "Surah Mulk" \
+  --type surah \
+  --app-id com.ummeshuja.surahmulk.mp3 \
+  --banner-id ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx \
+  --admob-app-id ca-app-xxxxxxxxxxxxxxxx~xxxxxxxxxx
 ```
 
-### Step 4: Build Release Bundle
+> **Note**: Banner and AdMob IDs are optional. Edit `lib/secrets/secrets.dart` and `android/app/admob.properties` manually if omitted.
+
+## Audio Player Features
+
+### PlayerScreen Widget
+
+The main screen (`lib/screens/player_screen.dart`) provides:
+
+- **Play/Pause Button**: Large circular button with icon feedback
+- **Progress Slider**: Seek to any position in the audio
+- **Duration Display**: Shows current position and total duration in MM:SS format
+- **Header**: Displays Arabic and English names with gradient background
+- **AdMob Banner**: Monetization support at the bottom
+- **State Management**: Full playback state tracking
+
+### Supported Audio Formats
+
+- MP3 (recommended)
+- WAV
+- OGG
+- AAC
+- FLAC
+
+## Dependencies
+
+### Core
+- `flutter`: SDK
+- `audioplayers: ^6.0.0` - Audio playback engine
+- `google_mobile_ads: ^7.0.0` - Monetization (AdMob)
+- `flutter_native_splash: ^2.4.0` - Splash screen
+
+### Development
+- `flutter_lints: ^6.0.0` - Code quality
+- `flutter_launcher_icons: ^0.14.4` - App icon generation
+
+## AdMob Setup
+
+### Configure Secrets
+
+Edit `lib/secrets/secrets.dart`:
+
+```dart
+class Secrets {
+  static const String surahYaseenBannerUnitId = 'ca-app-pub-xxxxxxxxxxxxxxxx/yyyyyyyyyy';
+  static const String surahYaseenAdmobAppId = 'ca-app-xxxxxxxxxxxxxxxx~zzzzzzzzzz';
+  
+  // Add more flavors...
+}
+```
+
+### Configure Android
+
+Edit `android/app/admob.properties`:
+
+```properties
+surah_yaseen_banner_unit_id=ca-app-pub-xxxxxxxxxxxxxxxx/yyyyyyyyyy
+surah_yaseen_admob_app_id=ca-app-xxxxxxxxxxxxxxxx~zzzzzzzzzz
+
+# Add more flavors...
+```
+
+> **Note**: Never commit real AdMob IDs. Use placeholders and override locally.
+
+## Gradle Flavor Configuration
+
+Flavors are defined in `android/app/build.gradle.kts`:
+
+```gradle
+flavorDimensions += "version"
+
+productFlavors {
+    surah_yaseen {
+        dimension "version"
+        applicationId "com.ummeshuja.surahyaseen.mp3"
+        resValue("string", "app_name", "Surah Yaseen")
+        // AdMob config loaded from admob.properties
+    }
+    
+    surah_muzammil {
+        dimension "version"
+        applicationId "com.ummeshuja.surah muzammil.mp3"
+        resValue("string", "app_name", "Surah Muzammil")
+    }
+}
+```
+
+## Splash Screen
+
+### Generate Splash
 
 ```bash
-flutter build appbundle --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name> --release
+flutter pub run flutter_native_splash:create
 ```
 
-## Android Build System
+Configuration is in `pubspec.yaml`:
 
-### Gradle Configuration
+```yaml
+flutter_native_splash:
+  color: "#0B3D02"
+  image: assets/splash/splash.png
+  android: true
+  ios: true
+  android_gravity: center
+  ios_content_mode: center
+```
 
-The app uses **Kotlin DSL** (`build.gradle.kts`) for Gradle configuration:
+## Testing
 
-- **Flavors**: Each productFlavor has unique `applicationId`, `manifestPlaceholders`, and branding
-- **Asset Copy Task**: Gradle copies the correct flavor PDF before asset bundling
-- **AdMob Injection**: Per-flavor AdMob app IDs injected into AndroidManifest
-- **Signing**: Keystore credentials loaded from environment variables (for CI/CD)
+### Run Tests
 
-### Key Files
+```bash
+flutter test
+```
 
-- `android/app/build.gradle.kts`: Flavor definitions, copy task, signing
-- `android/app/admob.properties`: AdMob app IDs (Git-ignored, environment-injected)
-- `android/app/src/main/AndroidManifest.xml`: App manifest with placeholders
+### Run with Coverage
 
-## Secrets & Configuration
+```bash
+flutter test --coverage
+```
 
-### AdMob IDs
+## Troubleshooting
 
-The app reads AdMob IDs from:
-- `lib/secrets/secrets.dart` — banner unit IDs per flavor (Git-ignored)
-- `android/app/admob.properties` — AdMob app IDs per flavor (Git-ignored)
+### Audio File Not Found
 
-Both files are generated by the `add_flavor.dart` script. For production, inject real IDs via the script's `--banner-id` and `--admob-app-id` flags.
+**Problem**: Runtime error "assets/islamic_content/surah_yaseen.mp3 not found"
 
-### Keystore & Signing
+**Solution**:
+1. Check file exists: `ls -la assets/islamic_content/`
+2. Verify `pubspec.yaml` includes the folder: `- assets/islamic_content/`
+3. Run `flutter pub get` after modifying `pubspec.yaml`
+4. Run `flutter clean` then `flutter run`
 
-For production APK/bundle signing:
+### Flavor Not Found
 
-1. Create keystore (if not exists):
+**Problem**: Error "Unknown flavor surah_xyz"
+
+**Solution**:
+1. Verify config file exists: `lib/config/surah_xyz_config.dart`
+2. Add to `FlavorManager._flavors` map in `lib/config/flavor_manager.dart`
+3. Verify `android/app/build.gradle.kts` has the productFlavor
+
+### AdMob Banner Not Showing
+
+**Problem**: Banner ad placeholder appears but ad doesn't load
+
+**Solution**:
+1. Check AdMob IDs in `lib/secrets/secrets.dart` are valid
+2. Use test IDs during development: `ca-app-pub-3940256099942544/6300978111` (banner test ID)
+3. Ensure app is release-signed for production builds
+4. Check AdMob network status in AdMob console
+
+## Publishing to Play Store
+
+1. **Update Version**: Edit `pubspec.yaml` `version: x.y.z+n`
+
+2. **Build Release Bundle**:
    ```bash
-   keytool -genkey -v -keystore android/app/keystore.jks \
-     -keyalg RSA -keysize 2048 -validity 10000 \
-     -alias <key-alias> -storepass <store-password>
+   flutter build appbundle --flavor surah_yaseen --dart-define=FLAVOR=surah_yaseen --release
    ```
 
-2. Set environment variables:
+3. **Sign APK** (if building APK):
    ```bash
-   export KEYSTORE_PATH="/path/to/keystore.jks"
-   export KEYSTORE_PASSWORD="store-password"
-   export KEY_ALIAS="key-alias"
-   export KEY_PASSWORD="key-password"
+   jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+     -keystore keystore.jks app-release-unsigned.apk alias_name
    ```
 
-3. Build with signing:
-   ```bash
-   flutter build appbundle --flavor <flavor-name> --dart-define=FLAVOR=<flavor-name> --release
-   ```
+4. **Upload to Play Store Console**
+   - Go to Release Management → App Releases
+   - Upload the `.aab` file
+   - Complete store listing and review
 
-## Release & Deployment
+## Performance Tips
 
-### Release Checklist
+- **Audio Format**: Use MP3 for smaller file sizes
+- **Bitrate**: 128 kbps is sufficient for Quranic audio
+- **Duration**: Limit single audio file to < 30 minutes
+- **Build Size**: APK size typically 30-50 MB per flavor
 
-- ✅ Increment version in `pubspec.yaml` (e.g., `1.0.1+2`)
-- ✅ Test all flavors locally
-- ✅ Verify PDF loads correctly
-- ✅ Check AdMob banner visibility
-- ✅ Build release APK/bundle
-- ✅ Test release build on device
-- ✅ Verify app signing
+## License
 
-### Upload to Google Play Console
+This project is proprietary. All Islamic content rights reserved.
 
-1. Log in to [Google Play Console](https://play.google.com/console)
-2. Select your app
-3. Navigate to **Release** → **Production** (or **Internal Testing** first)
-4. Upload the `.aab` file from `build/app/outputs/bundle/<flavor-name>Release/`
-5. Review app info, screenshots, and permissions
-6. Submit for review
+## Support
 
-## Project Dependencies
+For issues or questions, contact the development team or file an issue in the repository.
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `syncfusion_flutter_pdfviewer` | ^33.1.46 | PDF viewing |
-| `google_mobile_ads` | ^7.0.0 | AdMob integration |
-| `flutter_native_splash` | ^2.4.0 | Splash screen |
-| `cupertino_icons` | ^1.0.8 | iOS-style icons |
-| `flutter_launcher_icons` | ^0.14.4 | Icon generation |
-| `flutter_lints` | ^6.0.0 | Code linting |
+---
 
+**Last Updated**: May 2026  
+**Current Version**: 1.0.0  
+**Flutter SDK**: 3.10.7+

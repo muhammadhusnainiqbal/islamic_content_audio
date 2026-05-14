@@ -11,25 +11,25 @@ dart run scripts/add_flavor.dart --name <flavor-name> --arabic "<Arabic Name>" -
 
 ```bash
 
-dart run scripts/add_flavor.dart --name surah_yaseen --arabic "سورۃ یٰسٓ" --english "Surah Yaseen" --type surah --app-id com.ummeshuja.surahyaseen.pdf --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_yaseen --arabic "سورۃ یٰسٓ" --english "Surah Yaseen" --type surah --app-id com.ummeshuja.surahyaseen.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Rahman
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_rehman --arabic "سورۃ الرَّحْمَن" --english "Surah Rahman" --type surah --app-id com.ummeshuja.surahrehman.pdf --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_rehman --arabic "سورۃ الرَّحْمَن" --english "Surah Rahman" --type surah --app-id com.ummeshuja.surahrehman.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Mulk
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_mulk --arabic "سورۃ الْمُلْک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surahmulk.pdf --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_mulk --arabic "سورۃ الْمُلْک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surahmulk.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Muzammil
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.pdf --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add <name of flavor>
@@ -43,6 +43,8 @@ dart run scripts/add_flavor.dart --name <flavor-name> --arabic "<Arabic Name>" -
 ---
 
 ## Running the App
+
+> **Important**: This is now an **Audio Player App** (not PDF Viewer). Make sure you have audio files in `assets/islamic_content/` directory named as `{flavor}.mp3` (e.g., `surah_yaseen.mp3`, `surah_muzammil.mp3`).
 
 ### Run Surah Yaseen
 
@@ -102,11 +104,52 @@ flutter build appbundle --flavor surah_mulk --dart-define=FLAVOR=surah_mulk --re
 
 > **Output path**: `build/app/outputs/bundle/<flavor>Release/app-<flavor>-release.aab`
 
-### Clean Before Release Build
+---
 
-```bash
-flutter clean && flutter pub get
+## Important Notes - Audio Player App
+
+### Audio Asset Structure
+
+Your `assets/islamic_content/` directory should contain:
 ```
+assets/
+  islamic_content/
+  surah_yaseen/
+      surah_yaseen.mp3
+      surah_yaseen_icon.png
+      ...
+```
+
+### AppConfig Changes
+
+The `AppConfig` class now requires an `audio` parameter that specifies the audio file path:
+
+```dart
+const AppConfig(
+  nameArabic: 'سورۃ یٰسٓ',
+  nameEnglish: 'Surah Yaseen',
+  admobBannerUnitId: Secrets.surahYaseenBannerUnitId,
+  contentType: ContentType.surah,
+);
+```
+
+### Dependencies Changed
+
+**Removed:**
+- `syncfusion_flutter_pdfviewer: ^33.1.46`
+
+**Added:**
+- `audioplayers: ^6.0.0`
+
+### PlayerScreen Widget
+
+The main screen is now `PlayerScreen` (previously `PdfViewerScreen`) with the following features:
+- ▶️ Play/Pause button with circular avatar design
+- ⏱️ Progress slider with seek functionality
+- ⏲️ Time display (current position / total duration)
+- 🎨 Green gradient header matching Islamic theme
+- 📱 AdMob banner ad integration
+- 📊 Duration and position tracking
 
 ---
 

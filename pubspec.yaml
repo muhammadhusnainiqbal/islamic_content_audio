@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  syncfusion_flutter_pdfviewer: ^33.1.46
+  audioplayers: ^6.0.0
   google_mobile_ads: ^7.0.0
   flutter_native_splash: ^2.4.0
 
@@ -56,7 +56,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/islamic_content/islamic_content.pdf
+    - assets/islamic_content/islamic_content.mp3
     - assets/icons/app_icon.png
 
 flutter_native_splash:

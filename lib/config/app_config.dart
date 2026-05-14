@@ -1,6 +1,6 @@
 import 'content_type.dart';
 
-/// Configuration model for a PDF app instance
+/// Configuration model for an audio player app instance
 class AppConfig {
   /// Arabic name of the content (e.g., 'سورۃ یٰسٓ')
   final String nameArabic;

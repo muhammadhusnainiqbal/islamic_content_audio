@@ -3,7 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:islamic_content_audio/config/flavor_manager.dart';
 import 'package:islamic_content_audio/config/app_config.dart';
 import 'package:islamic_content_audio/theme/app_theme.dart';
-import 'package:islamic_content_audio/screens/pdf_viewer_screen.dart';
+import 'package:islamic_content_audio/screens/player_screen.dart';
 
 const String _defaultFlavor = String.fromEnvironment('FLAVOR');
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appConfig.nameEnglish,
       theme: AppTheme.lightTheme,
-      home: PdfViewerScreen(appConfig: appConfig),
+      home: PlayerScreen(appConfig: appConfig),
     );
   }
 }
