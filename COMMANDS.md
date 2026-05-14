@@ -31,6 +31,10 @@ dart run scripts/add_flavor.dart --name surah_mulk --arabic "سورۃ الْمُ
 ```bash
 dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
+<!-- test ids -->
+```bash
+dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.mp3 --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
+```
 
 ### Add <name of flavor>
 
@@ -62,6 +66,12 @@ flutter run --flavor surah_rehman --dart-define=FLAVOR=surah_rehman
 
 ```bash
 flutter run --flavor surah_mulk --dart-define=FLAVOR=surah_mulk
+```
+
+### Run Surah Muzammil
+
+```bash
+flutter run --flavor surah_muzammil --dart-define=FLAVOR=surah_muzammil 
 ```
 
 ### Run in Release Mode

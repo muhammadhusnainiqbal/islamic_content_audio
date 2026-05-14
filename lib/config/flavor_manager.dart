@@ -1,11 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:islamic_content_audio/config/app_config.dart';
 
+import 'package:islamic_content_audio/config/surah_muzammil_config.dart'
+    as surah_muzammil;
+
 /// Flavor manager: resolves `AppConfig` by flavor key.
 class FlavorManager {
   static const String defaultFlavor = 'surah_yaseen';
 
-  static final Map<String, AppConfig> _flavors = {};
+  static final Map<String, AppConfig> _flavors = {
+    'surah_muzammil': surah_muzammil.kAppConfig,
+  };
 
   static String normalize(String flavor) => flavor.trim().toLowerCase();
 

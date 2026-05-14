@@ -73,7 +73,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   Future<void> playAudio() async {
     await player.play(
-      AssetSource('assets/islamic_content/islamic_content.mp3'),
+      AssetSource('islamic_content/islamic_content.mp3'),
     );
     setState(() => isPlaying = true);
   }

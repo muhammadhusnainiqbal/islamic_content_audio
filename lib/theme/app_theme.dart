@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Shared theme data for all Surah PDF app flavors
+/// Shared theme data for all Islamic Content Audio app flavors
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,

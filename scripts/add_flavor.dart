@@ -1,6 +1,6 @@
 #!/usr/bin/env dart
 // ─────────────────────────────────────────────────────────────────────────────
-// add_flavor.dart  —  Islamic Content PDF App: New Flavor Scaffolder
+// add_flavor.dart  —  Islamic Content Audio App: New Flavor Scaffolder
 // ─────────────────────────────────────────────────────────────────────────────
 //
 // Usage:
@@ -14,11 +14,11 @@
 //     --admob-app-id ca-app-pub-xxx~zzz   (AdMob app ID, optional)
 //
 // ── What you must do FIRST (Step 1 — script cannot do this for you) ────────
-//   ❌ Place your PDF:  assets/<name>/<name>.pdf
+//   ❌ Place your Audio:  assets/<name>/<name>.mp3
 //   ❌ Place your icon: assets/<name>/<name>_icon.png  (1024×1024 PNG)
 //
 // ── What this script does automatically ──────────────────────────────────
-//   ✅ Step 2:  Copies PDF  → assets/islamic_content/islamic_content.pdf
+//   ✅ Step 2:  Copies MP3  → assets/islamic_content/islamic_content.mp3
 //   ✅ Step 3:  Copies icon → assets/icons/app_icon.png
 //   ✅ Step 4:  Creates lib/config/<name>_config.dart
 //   ✅ Step 5:  Registers flavor in lib/config/flavor_manager.dart
@@ -50,7 +50,7 @@ void main(List<String> args) {
   final arabic = parsed['arabic']!;
   final english = parsed['english']!;
   final type = parsed['type'] ?? 'surah';
-  final appId = parsed['app-id'] ?? 'com.ummeshuja.${name}_pdf';
+  final appId = parsed['app-id'] ?? 'com.ummeshuja.${name}_mp3';
   // Optional real AdMob IDs. If not provided, appId is used as placeholder.
   final bannerId =
       parsed['banner-id']; // AdMob banner unit ID (ca-app-pub-xxx/yyy)
@@ -66,22 +66,21 @@ void main(List<String> args) {
   }
 
   _log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  _log(' Islamic PDF App — Adding flavor: $name');
+  _log(' Islamic Audio App — Adding flavor: $name');
   _log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   // ── Step 1: Verify source assets exist BEFORE touching any code ──────────
   _step('1', 'Verifying source assets');
-  final pdfSrc = File('assets/$name/$name.pdf');
+  final mp3Src = File('assets/$name/$name.mp3');
   final iconSrc = File('assets/$name/${name}_icon.png');
   final hasIcon = iconSrc.existsSync();
 
-  if (!pdfSrc.existsSync()) {
-    _err('Missing PDF: ${pdfSrc.path}');
+  if (!mp3Src.existsSync()) {
+    _err('Missing MP3: ${mp3Src.path}');
     _err('Create the file and re-run this script.');
     exit(2);
   }
-  _log('  ✔ PDF found:  ${pdfSrc.path}');
-
+  _log('  ✔ MP3 found:  ${mp3Src.path}');
   if (!hasIcon) {
     _warn('Icon not found: ${iconSrc.path}');
     _warn('Icon steps (3, 9) will be skipped. Add it later and run:');
@@ -90,12 +89,12 @@ void main(List<String> args) {
     _log('  ✔ Icon found: ${iconSrc.path}');
   }
 
-  // ── Step 2: Copy PDF to shared runtime location ──────────────────────────
-  _step('2', 'Copying PDF → assets/islamic_content/islamic_content.pdf');
+  // ── Step 2: Copy MP3 to shared runtime location ──────────────────────────
+  _step('2', 'Copying MP3 → assets/islamic_content/islamic_content.mp3');
   _copyAsset(
-    src: pdfSrc.path,
+    src: mp3Src.path,
     dstDir: 'assets/islamic_content',
-    dstName: 'islamic_content.pdf',
+    dstName: 'islamic_content.mp3',
   );
 
   // ── Step 3: Copy icon to shared runtime location ─────────────────────────
@@ -252,16 +251,26 @@ void _registerInFlavorManager(String name) {
   // 2. Ensure the map entry exists (add if new flavor)
   if (!content.contains("'$name': $name.kAppConfig,")) {
     final mapEntry = "    '$name': $name.kAppConfig,\n";
-    final lastEntryPattern = RegExp(
-      r'(\.kAppConfig,)\s*\n(\s*\};)',
-      multiLine: true,
-    );
+    
+    // Support empty map: _flavors = {};
+    if (content.contains(RegExp(r'_flavors\s*=\s*\{\s*\};'))) {
+      content = content.replaceFirst(
+        RegExp(r'_flavors\s*=\s*\{\s*\};'),
+        '_flavors = {\n$mapEntry  };',
+      );
+    } else {
+      // Support non-empty map
+      final lastEntryPattern = RegExp(
+        r'(\.kAppConfig,)\s*\n(\s*\};)',
+        multiLine: true,
+      );
 
-    if (lastEntryPattern.hasMatch(content)) {
-      content = content.replaceFirstMapped(lastEntryPattern, (match) {
-        final trailing = match.group(2)!; // "  };"
-        return '${match.group(1)}\n$mapEntry$trailing';
-      });
+      if (lastEntryPattern.hasMatch(content)) {
+        content = content.replaceFirstMapped(lastEntryPattern, (match) {
+          final trailing = match.group(2)!; // "  };"
+          return '${match.group(1)}\n$mapEntry$trailing';
+        });
+      }
     }
   }
 
@@ -442,7 +451,7 @@ Map<String, String>? _parseArgs(List<String> args) {
 
 void _printUsage() {
   print('''
-Islamic PDF App — Flavor Scaffolder
+Islamic Audio App — Flavor Scaffolder
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Required:
   --name      surah_mulk                    (snake_case identifier)
@@ -456,7 +465,7 @@ Optional:
   --admob-app-id  ca-app-pub-xxx~zzz       (AdMob app ID        — uses --app-id as placeholder if omitted)
 
 Before running, place source files:
-  assets/surah_mulk/surah_mulk.pdf            ← PDF file
+  assets/surah_mulk/surah_mulk.mp3            ← MP3 file
   assets/surah_mulk/surah_mulk_icon.png       ← 1024×1024 PNG icon
 
 Example 1 — placeholder IDs (edit AdMob IDs manually after):
@@ -475,7 +484,7 @@ Example 2 — real AdMob IDs (fully automated, zero manual edits needed):
     --banner-id ca-app-pub-3940256099942544/6300978111 \\
     --admob-app-id ca-app-pub-3940256099942544~3347511713
 
-islamic_content_audio % dart run scripts/add_flavor.dart --name surah_mulk --arabic  "سورۃ الملک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surah_mulk --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
+islamic_content_audio % dart run scripts/add_flavor.dart --name surah_mulk --arabic  "سورۃ الملک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surah_mulk.mp3 --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
 
 ''');
 }

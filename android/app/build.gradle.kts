@@ -51,16 +51,9 @@ android {
     flavorDimensions += "content"
 
     productFlavors {
-        create("surah_yaseen") {
-            dimension = "content"
-            applicationId = "com.ummeshuja.surahyaseen.pdf"
-            manifestPlaceholders["appLabel"] = "Surah Yaseen"
-            manifestPlaceholders["com.google.android.gms.ads.APPLICATION_ID"] =
-                admobProps.getProperty("surah_yaseen.app.id", "")
-        }
         create("surah_muzammil") {
             dimension = "content"
-            applicationId = "com.ummeshuja.surahmuzammil.pdf"
+            applicationId = "com.ummeshuja.surahmuzammil.mp3"
             manifestPlaceholders["appLabel"] = "Surah Muzammil"
             manifestPlaceholders["com.google.android.gms.ads.APPLICATION_ID"] =
                 admobProps.getProperty("surah_muzammil.app.id", "")
@@ -69,13 +62,13 @@ android {
 
     applicationVariants.all {
         val flavor = flavorName
-        val sourcePdf = file("${projectDir}/../assets/$flavor/$flavor.pdf")
+        val sourceMp3 = file("${projectDir}/../assets/$flavor/$flavor.mp3")
         val destinationDir = file("${projectDir}/../assets/islamic_content")
 
-        tasks.register("copy${name.capitalize()}Pdf", Copy::class) {
-            from(sourcePdf)
+        tasks.register("copy${name.capitalize()}Mp3", Copy::class) {
+            from(sourceMp3)
             into(destinationDir)
-            rename { "islamic_content.pdf" }
+            rename { "islamic_content.mp3" }
         }.let { copyTask ->
             mergeAssetsProvider.configure { dependsOn(copyTask) }
         }
