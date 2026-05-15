@@ -11,29 +11,29 @@ dart run scripts/add_flavor.dart --name <flavor-name> --arabic "<Arabic Name>" -
 
 ```bash
 
-dart run scripts/add_flavor.dart --name surah_yaseen --arabic "سورۃ یٰسٓ" --english "Surah Yaseen" --type surah --app-id com.ummeshuja.surahyaseen.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_yaseen --arabic "سورۃ یٰسٓ" --english "Surah Yaseen" --type surah --app-id com.ummeshuja.surahyaseen.audio --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Rahman
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_rehman --arabic "سورۃ الرَّحْمَن" --english "Surah Rahman" --type surah --app-id com.ummeshuja.surahrehman.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_rehman --arabic "سورۃ الرَّحْمَن" --english "Surah Rahman" --type surah --app-id com.ummeshuja.surahrehman.audio --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Mulk
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_mulk --arabic "سورۃ الْمُلْک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surahmulk.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_mulk --arabic "سورۃ الْمُلْک" --english "Surah Mulk" --type surah --app-id com.ummeshuja.surahmulk.audio --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 
 ### Add Surah Muzammil
 
 ```bash
-dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.mp3 --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
+dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.audio --banner-id <admob-banner-unit-id> --admob-app-id <admob-app-id>
 ```
 <!-- test ids -->
 ```bash
-dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.mp3 --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
+dart run scripts/add_flavor.dart --name surah_muzammil --arabic "سورة المزمل" --english "Surah Muzammil" --type surah --app-id com.ummeshuja.surahmuzammil.audio --banner-id ca-app-pub-3940256099942544/6300978111 --admob-app-id ca-app-pub-3940256099942544~3347511713
 ```
 
 ### Add <name of flavor>

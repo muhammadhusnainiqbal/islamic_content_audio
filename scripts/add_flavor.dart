@@ -50,7 +50,7 @@ void main(List<String> args) {
   final arabic = parsed['arabic']!;
   final english = parsed['english']!;
   final type = parsed['type'] ?? 'surah';
-  final appId = parsed['app-id'] ?? 'com.ummeshuja.${name}_mp3';
+  final appId = parsed['app-id'] ?? 'com.ummeshuja.${name}_audio';
   // Optional real AdMob IDs. If not provided, appId is used as placeholder.
   final bannerId =
       parsed['banner-id']; // AdMob banner unit ID (ca-app-pub-xxx/yyy)
@@ -71,16 +71,16 @@ void main(List<String> args) {
 
   // ── Step 1: Verify source assets exist BEFORE touching any code ──────────
   _step('1', 'Verifying source assets');
-  final mp3Src = File('assets/$name/$name.mp3');
+  final audiSrc = File('assets/$name/$name.mp3');
   final iconSrc = File('assets/$name/${name}_icon.png');
   final hasIcon = iconSrc.existsSync();
 
-  if (!mp3Src.existsSync()) {
-    _err('Missing MP3: ${mp3Src.path}');
+  if (!audiSrc.existsSync()) {
+    _err('Missing MP3: ${audiSrc.path}');
     _err('Create the file and re-run this script.');
     exit(2);
   }
-  _log('  ✔ MP3 found:  ${mp3Src.path}');
+  _log('  ✔ MP3 found:  ${audiSrc.path}');
   if (!hasIcon) {
     _warn('Icon not found: ${iconSrc.path}');
     _warn('Icon steps (3, 9) will be skipped. Add it later and run:');
@@ -92,7 +92,7 @@ void main(List<String> args) {
   // ── Step 2: Copy MP3 to shared runtime location ──────────────────────────
   _step('2', 'Copying MP3 → assets/islamic_content/islamic_content.mp3');
   _copyAsset(
-    src: mp3Src.path,
+    src: audiSrc.path,
     dstDir: 'assets/islamic_content',
     dstName: 'islamic_content.mp3',
   );
@@ -251,7 +251,7 @@ void _registerInFlavorManager(String name) {
   // 2. Ensure the map entry exists (add if new flavor)
   if (!content.contains("'$name': $name.kAppConfig,")) {
     final mapEntry = "    '$name': $name.kAppConfig,\n";
-    
+
     // Support empty map: _flavors = {};
     if (content.contains(RegExp(r'_flavors\s*=\s*\{\s*\};'))) {
       content = content.replaceFirst(

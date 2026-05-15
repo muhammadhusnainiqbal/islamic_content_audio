@@ -203,7 +203,7 @@ dart run scripts/add_flavor.dart \
   --arabic "سورۃ الْمُلْک" \
   --english "Surah Mulk" \
   --type surah \
-  --app-id com.ummeshuja.surahmulk.mp3 \
+  --app-id com.ummeshuja.surahmulk.audio \
   --banner-id ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx \
   --admob-app-id ca-app-xxxxxxxxxxxxxxxx~xxxxxxxxxx
 ```
@@ -281,14 +281,14 @@ flavorDimensions += "version"
 productFlavors {
     surah_yaseen {
         dimension "version"
-        applicationId "com.ummeshuja.surahyaseen.mp3"
+        applicationId "com.ummeshuja.surahyaseen.audio"
         resValue("string", "app_name", "Surah Yaseen")
         // AdMob config loaded from admob.properties
     }
     
     surah_muzammil {
         dimension "version"
-        applicationId "com.ummeshuja.surah muzammil.mp3"
+        applicationId "com.ummeshuja.surah muzammil.audio"
         resValue("string", "app_name", "Surah Muzammil")
     }
 }
