@@ -51,6 +51,13 @@ android {
     flavorDimensions += "content"
 
     productFlavors {
+        create("surah_muzammil") {
+            dimension = "content"
+            applicationId = "com.ummeshuja.surahmuzammil.audio"
+            manifestPlaceholders["appLabel"] = "Surah Muzammil"
+            manifestPlaceholders["com.google.android.gms.ads.APPLICATION_ID"] =
+                admobProps.getProperty("surah_muzammil.app.id", "")
+        }
     }
 
     applicationVariants.all {

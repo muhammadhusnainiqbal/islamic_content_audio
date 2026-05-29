@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:islamic_content_audio/config/app_config.dart';
 
 class PlayerScreen extends StatefulWidget {
@@ -12,12 +14,18 @@ class PlayerScreen extends StatefulWidget {
   State<PlayerScreen> createState() => _PlayerScreenState();
 }
 
-class _PlayerScreenState extends State<PlayerScreen> {
+class _PlayerScreenState extends State<PlayerScreen>
+    with WidgetsBindingObserver {
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
 
   final AudioPlayer player = AudioPlayer();
 
+  static const String _kLastAudioKey = 'player_last_audio';
+  static const String _kLastPositionKey = 'player_last_position_ms';
+  final String _assetPath = 'islamic_content/islamic_content.mp3';
+
+  int _lastSavedAtMs = 0;
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
@@ -25,6 +33,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _bannerAd = BannerAd(
       adUnitId: widget.appConfig.admobBannerUnitId,
@@ -53,6 +62,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
     /// current position
     player.onPositionChanged.listen((p) {
       setState(() => position = p);
+
+      // Persist position periodically while playing (throttle to reduce writes)
+      if (isPlaying) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if (now - _lastSavedAtMs > 1500) {
+          _lastSavedAtMs = now;
+          _savePosition(p);
+          _saveCurrentAudioAndPosition();
+        }
+      }
     });
 
     /// when completed
@@ -61,30 +80,74 @@ class _PlayerScreenState extends State<PlayerScreen> {
         isPlaying = false;
         position = Duration.zero;
       });
+      // disable wakelock and reset saved position
+      WakelockPlus.disable();
+      _savePosition(Duration.zero);
     });
+
+    // load last saved position and prepare source
+    _loadLastPosition();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _persistCurrentState();
     _bannerAd.dispose();
     player.dispose();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _persistCurrentState();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
   Future<void> playAudio() async {
-    await player.play(
-      AssetSource('islamic_content/islamic_content.mp3'),
-    );
+    try {
+      await player.setSource(AssetSource(_assetPath));
+    } catch (_) {}
+
+    await player.play(AssetSource(_assetPath));
     setState(() => isPlaying = true);
+
+    // enable wakelock while playing
+    WakelockPlus.enable();
+
+    // persist current audio & position
+    _saveCurrentAudioAndPosition();
   }
 
   Future<void> pauseAudio() async {
     await player.pause();
     setState(() => isPlaying = false);
+    WakelockPlus.disable();
+
+    // save position immediately when pausing
+    _persistCurrentState();
   }
 
   Future<void> seekAudio(Duration value) async {
     await player.seek(value);
+    // update stored position after a manual seek
+    _persistCurrentState();
+  }
+
+  Future<void> playFromStart() async {
+    try {
+      await player.setSource(AssetSource(_assetPath));
+    } catch (_) {}
+
+    await player.seek(Duration.zero);
+    await player.play(AssetSource(_assetPath));
+    setState(() => isPlaying = true);
+    WakelockPlus.enable();
+    _persistCurrentState();
   }
 
   String formatTime(Duration d) {
@@ -94,6 +157,49 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final seconds = twoDigits(d.inSeconds % 60);
 
     return "$minutes:$seconds";
+  }
+
+  Future<void> _savePosition(Duration p) async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setInt(_kLastPositionKey, p.inMilliseconds);
+    } catch (_) {}
+  }
+
+  Future<void> _saveCurrentAudioAndPosition() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString(_kLastAudioKey, _assetPath);
+      await sp.setInt(_kLastPositionKey, position.inMilliseconds);
+    } catch (_) {}
+  }
+
+  Future<void> _persistCurrentState() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString(_kLastAudioKey, _assetPath);
+      await sp.setInt(_kLastPositionKey, position.inMilliseconds);
+    } catch (_) {}
+  }
+
+  Future<void> _loadLastPosition() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      final savedAudio = sp.getString(_kLastAudioKey);
+      final savedMs = sp.getInt(_kLastPositionKey) ?? 0;
+
+      if (savedAudio != null && savedAudio == _assetPath && savedMs > 0) {
+        final saved = Duration(milliseconds: savedMs);
+        // prepare source and seek to saved position before playback
+        try {
+          await player.setSource(AssetSource(_assetPath));
+          await player.seek(saved);
+          setState(() => position = saved);
+        } catch (_) {
+          // ignore if setting source is not supported
+        }
+      }
+    } catch (_) {}
   }
 
   @override
@@ -141,19 +247,63 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    /// SLIDER
-                    Slider(
-                      min: 0,
-                      max: duration.inSeconds == 0
-                          ? 1
-                          : duration.inSeconds.toDouble(),
-                      value: position.inSeconds.toDouble().clamp(
-                        0,
-                        duration.inSeconds.toDouble(),
+                    /// RESET ICON ABOVE SLIDER
+                    Padding(
+                      padding: const EdgeInsets.only(right: 28.0, bottom: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: playFromStart,
+                            child: Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: const Color(
+                                  0xFF1E7F5C,
+                                ).withOpacity(0.14),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.restart_alt,
+                                color: Color(0xFF1E7F5C),
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      onChanged: (value) {
-                        seekAudio(Duration(seconds: value.toInt()));
-                      },
+                    ),
+
+                    /// SLIDER
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: const Color(0xFF1E7F5C),
+                        inactiveTrackColor: Colors.grey.shade300,
+
+                        /// draggable circle color
+                        thumbColor: const Color(0xFF1E7F5C),
+
+                        /// ripple effect color
+                        overlayColor: const Color(0xFF1E7F5C).withOpacity(0.2),
+
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 10,
+                        ),
+                      ),
+                      child: Slider(
+                        min: 0,
+                        max: duration.inSeconds == 0
+                            ? 1
+                            : duration.inSeconds.toDouble(),
+                        value: position.inSeconds.toDouble().clamp(
+                          0,
+                          duration.inSeconds.toDouble(),
+                        ),
+                        onChanged: (value) {
+                          seekAudio(Duration(seconds: value.toInt()));
+                        },
+                      ),
                     ),
 
                     /// TIME
@@ -185,18 +335,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         },
                       ),
                     ),
+                    const SizedBox(width: 16),
                   ],
                 ),
               ),
             ),
 
             // Banner Ad
-            if (_isBannerAdReady)
-              Container(
-                width: _bannerAd.size.width.toDouble(),
-                height: _bannerAd.size.height.toDouble(),
-                child: AdWidget(ad: _bannerAd),
-              ),
+            SizedBox(
+              height: 50, // reserve banner height
+              child: _isBannerAdReady ? AdWidget(ad: _bannerAd) : null,
+            ),
           ],
         ),
       ),
