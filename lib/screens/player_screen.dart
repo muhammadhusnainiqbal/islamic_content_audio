@@ -84,9 +84,6 @@ class _PlayerScreenState extends State<PlayerScreen>
       WakelockPlus.disable();
       _savePosition(Duration.zero);
     });
-
-    // load last saved position and prepare source
-    _loadLastPosition();
   }
 
   @override
@@ -179,26 +176,6 @@ class _PlayerScreenState extends State<PlayerScreen>
       final sp = await SharedPreferences.getInstance();
       await sp.setString(_kLastAudioKey, _assetPath);
       await sp.setInt(_kLastPositionKey, position.inMilliseconds);
-    } catch (_) {}
-  }
-
-  Future<void> _loadLastPosition() async {
-    try {
-      final sp = await SharedPreferences.getInstance();
-      final savedAudio = sp.getString(_kLastAudioKey);
-      final savedMs = sp.getInt(_kLastPositionKey) ?? 0;
-
-      if (savedAudio != null && savedAudio == _assetPath && savedMs > 0) {
-        final saved = Duration(milliseconds: savedMs);
-        // prepare source and seek to saved position before playback
-        try {
-          await player.setSource(AssetSource(_assetPath));
-          await player.seek(saved);
-          setState(() => position = saved);
-        } catch (_) {
-          // ignore if setting source is not supported
-        }
-      }
     } catch (_) {}
   }
 
